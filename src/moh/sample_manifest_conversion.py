@@ -53,7 +53,7 @@ class MOHSampleManifestConversion:
         except Exception as err:
             raise ManifestError('There was a problem with the manifest contents') from err
 
-        print("Data rows in manifest: ", manifest.getDataRowRange())
+        print("Data rows in manifest: ", manifest.get_data_row_range())
 
         return manifest
 

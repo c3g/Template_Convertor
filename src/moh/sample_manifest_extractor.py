@@ -32,10 +32,10 @@ class MOHSampleManifestExtractor:
 
     def extract_samples(self):
         samples = []
-        row_range = self.manifest.getDataRowRange()
+        row_range = self.manifest.get_data_row_range()
         for i_row in row_range:
             self.current_row_number = i_row
-            row = self.manifest.getRow(i_row)
+            row = self.manifest.get_row(i_row)
             sample = self._extract_sample_from_row(row)
             if sample is not None:
                 samples.append(sample)
