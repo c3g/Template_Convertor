@@ -1,10 +1,15 @@
-
 from types import SimpleNamespace
 from pandas import pandas as pd
 from core.conversion_log import ConversionLog
 from freezeman.freezeman_config import CONTAINER_KIND, HEADERS as FMS_HEADERS
 from freezeman.sample import FreezemanSample
-from .moh_config import HEADERS, SAMPLE_TYPES, CONTAINER_TYPES, TISSUE_TYPE_MAP, NUCLEIC_ACID_TYPE_MAP
+from .moh_config import (
+    HEADERS,
+    SAMPLE_TYPES,
+    CONTAINER_TYPES,
+    TISSUE_TYPE_MAP,
+    NUCLEIC_ACID_TYPE_MAP,
+)
 from .sample_manifest import MOHSampleManifest
 
 
@@ -19,7 +24,7 @@ FMSContainerKind = SimpleNamespace(**CONTAINER_KIND)
 
 class MOHSampleManifestExtractor:
     # Implements the sample extraction logic
-    def __init__(self, manifest:MOHSampleManifest, conversion_log: ConversionLog):
+    def __init__(self, manifest: MOHSampleManifest, conversion_log: ConversionLog):
         self.manifest = manifest
         self.log = conversion_log
         self.current_row_number = -1
@@ -43,7 +48,7 @@ class MOHSampleManifestExtractor:
         return samples
 
     def _extract_sample_from_row(self, row):
-        
+
         row_type = self._extract_sample_type(row)
         if row_type is None:
             return None
@@ -68,35 +73,36 @@ class MOHSampleManifestExtractor:
 
         if pd.isna(moh_type):
             # sample type is missing
-            self._log_error('Sample type is not specified')
+            self._log_error("Sample type is not specified")
             return None
 
         if moh_type == MOHSampleTypes.TISSUE:
             moh_tissue_type = row[MOHHeaders.TISSUE_TYPE]
             if pd.isna(moh_tissue_type):
                 # Tissue type is not specified
-                self._log_error('Tissue type is not specified for tissue sample')
+                self._log_error("Tissue type is not specified for tissue sample")
                 return None
 
             fm_sample_type = TISSUE_TYPE_MAP[moh_tissue_type]
             if fm_sample_type is None:
-                self._log_error(f'Unknown tissue type for tissue sample: {moh_tissue_type}')
-            
+                self._log_error(
+                    f"Unknown tissue type for tissue sample: {moh_tissue_type}"
+                )
+
             return fm_sample_type
-            
 
             # map moh tissue type to freezeman sample type
         elif moh_type == MOHSampleTypes.NUCLEIC_ACID:
-            
+
             moh_nucleic_type = row[MOHHeaders.NUCLEIC_ACID_TYPE]
             if pd.isna(moh_nucleic_type):
-                self._log_error('Nucleic acid type not specified')
+                self._log_error("Nucleic acid type not specified")
                 return None
 
             fm_nucleic_type = NUCLEIC_ACID_TYPE_MAP[moh_nucleic_type]
 
             if fm_nucleic_type is None:
-                self._log_error(f'Nucleic acid type not recognized: {moh_nucleic_type}')
+                self._log_error(f"Nucleic acid type not recognized: {moh_nucleic_type}")
                 return None
 
             return fm_nucleic_type
@@ -104,11 +110,11 @@ class MOHSampleManifestExtractor:
         return None
 
     def _extract_container(self, row, sampleDict):
-        
+
         container_name = self._extract_value(row, MOHHeaders.CONTAINER_NAME)
         if container_name == None:
             self._log_warning("Container name is not specified")
-        
+
         container_barcode = self._extract_value(row, MOHHeaders.CONTAINER_BARCODE)
         if container_barcode == None:
             self._log_warning("Container barcode is not specified")
@@ -117,7 +123,7 @@ class MOHSampleManifestExtractor:
         if container_type == None:
             self._log_warning("Container type is not specified")
         elif not container_type in CONTAINER_TYPES:
-            self._log_error(f'Container type is not supported: {container_type}')
+            self._log_error(f"Container type is not supported: {container_type}")
 
         well = self._extract_value(row, MOHHeaders.WELL)
 
@@ -136,10 +142,9 @@ class MOHSampleManifestExtractor:
             sample_coord = well
             container_kind = FMSContainerKind.WELL_PLATE_384
 
-
         # populate the sampleDict values for containers
         # sampleDict[FMSHeaders.CONTAINER_NAME]
-                
+
         # Freezeman:
         # container kind
         # container name
@@ -147,11 +152,6 @@ class MOHSampleManifestExtractor:
         # container coord
         #
         # location barcode
-        #  
+        #
 
         return None
-           
-
-
-            
-
