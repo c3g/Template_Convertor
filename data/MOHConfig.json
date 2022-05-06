@@ -70,6 +70,12 @@
         "ILLUMINA_LIBRARY_POOL" : "Illumina Library Pool",
         "LIBRARY_IN_POOL" : "Library In Pool",
         "EXISTING_SAMPLE_OR_LIBRARY" : "Existing Sample or Library"
+    },
+
+    "containerTypes" : {
+        "WELL_PLATE_96": "96 well plate",
+        "WELL_PLATE_384": "384 well plate",
+        "Tube": "Tube"
     }
 
 

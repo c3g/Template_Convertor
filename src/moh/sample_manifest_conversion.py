@@ -1,13 +1,10 @@
-
-
-from pathlib import PurePath
-
 import pandas
 
-from MOH.MOHSampleManifest import MOHSampleManifest
-from MOH.MOHSampleManifestExtractor import MOHSampleManifestExtractor
-from core.ConversionLog import ConversionLog
-from core.ManifestError import ManifestError
+from core.conversion_log import ConversionLog
+from core.manifest_error import ManifestError
+from .sample_manifest import MOHSampleManifest
+from .sample_manifest_extractor import MOHSampleManifestExtractor
+
 
 
 class MOHSampleManifestConversion:
@@ -32,8 +29,13 @@ class MOHSampleManifestConversion:
            raise ManifestError('Unable to initialize manifest') from err
 
         extractor = MOHSampleManifestExtractor(manifest, self.log)
-        samples = extractor.extractSamples()
+        samples = extractor.extract_samples()
 
+        # For now, just print errors and warnings to console
+        self.log.output_messages()
+
+        print()
+        
         # TODO remove print code
         for sample in samples:
             print(sample)

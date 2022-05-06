@@ -1,9 +1,8 @@
 
-from enum import Enum
 from pandas import pandas as pd
-from core.Sheet import Sheet
-from MOH.MOHConfig import HEADERS
 
+from core.sheet import Sheet
+from .moh_config import HEADERS
 
 class MOHSampleManifest(Sheet):
 

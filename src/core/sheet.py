@@ -1,7 +1,7 @@
 
 import re
 
-from core.ManifestError import ManifestError
+from .manifest_error import ManifestError
 
 
 class Sheet:
