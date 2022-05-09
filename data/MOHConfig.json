@@ -1,40 +1,39 @@
 {
     "headers": {
-        "MANDATORY_FIELDS" : "mandatory fields",
+        "MANDATORY_FIELDS": "mandatory fields",
         "SAMPLE_TYPE": "sample type",
         "SAMPLE_NAME": "sample name, pool name or existing lims id",
         "SAMPLE_SET": "sample set",
         "INDIVIDUAL_ID": "individual id",
-        "COHORT_ID":    "cohort id",
-        "CONTAINER_TYPE" : "container type",
-        "CONTAINER_NAME" : "container name",
-        "WELL" : "well",
-        "CONTAINER_BARCODE" : "container barcode",
-        "TUBE_CARRIER_TYPE" : "tube carrier type",
-        "TYPE_CARRIER_NAME" : "tube carrier name",
-        "TUBE_CARRIER_BARCODE" : "tube carrier barcode",
-        "SPECIES" : "species",
-        "GENOME_SIZE" :"genome size (mb)",
-        "SEX" : "sex",
-        "REFERENCE_GENOME" : "reference genome",
-        "TISSUE_TYPE" : "tissue type",
-        "NUCLEIC_ACID_TYPE" : "nucleic acid type",
-        "NUCLEIC_ACID_SIZE" : "nucleic acid size (kb)",
-        "BUFFER" : "buffer",
-        "VOLUME" : "volume (ul)",
-        "CONCENTRATION" : "concentration",
-        "CONCENTRATION_UNITS" : "concentration units",
-        "LIBRARY_SIZE" : "library size (bases)",
-        "NUMBER_IN_POOL" : "number in pool",
-        "LIBRARY_TYPE" : "library type",
-        "LIBRARY_INDEX_SIZE" : "library index series",
-        "LIBRARY_INDEX_NAME" : "library index name",
-        "ADAPTER_TYPE" : "adapter type",
-        "I7_INDEX" : "i7 index",
-        "I5_INDEX" : "i5 index",
-        "COMMENTS" : "comments"
+        "COHORT_ID": "cohort id",
+        "CONTAINER_TYPE": "container type",
+        "CONTAINER_NAME": "container name",
+        "WELL": "well",
+        "CONTAINER_BARCODE": "container barcode",
+        "TUBE_CARRIER_TYPE": "tube carrier type",
+        "TYPE_CARRIER_NAME": "tube carrier name",
+        "TUBE_CARRIER_BARCODE": "tube carrier barcode",
+        "SPECIES": "species",
+        "GENOME_SIZE": "genome size (mb)",
+        "SEX": "sex",
+        "REFERENCE_GENOME": "reference genome",
+        "TISSUE_TYPE": "tissue type",
+        "NUCLEIC_ACID_TYPE": "nucleic acid type",
+        "NUCLEIC_ACID_SIZE": "nucleic acid size (kb)",
+        "BUFFER": "buffer",
+        "VOLUME": "volume (ul)",
+        "CONCENTRATION": "concentration",
+        "CONCENTRATION_UNITS": "concentration units",
+        "LIBRARY_SIZE": "library size (bases)",
+        "NUMBER_IN_POOL": "number in pool",
+        "LIBRARY_TYPE": "library type",
+        "LIBRARY_INDEX_SIZE": "library index series",
+        "LIBRARY_INDEX_NAME": "library index name",
+        "ADAPTER_TYPE": "adapter type",
+        "I7_INDEX": "i7 index",
+        "I5_INDEX": "i5 index",
+        "COMMENTS": "comments"
     },
-
     "tissueTypeMap": {
         "Breast Tumor (frozen)": "BIOPSY",
         "Buffy Coats": "BUFFY COAT",
@@ -50,8 +49,7 @@
         "Solid Tissue (biopsy)": "BIOPSY",
         "Whole Blood": "BLOOD"
     },
-
-    "nucleicAcidTypeMap" : {
+    "nucleicAcidTypeMap": {
         "Genomic DNA": "DNA",
         "cDNA": "DNA",
         "Amplicons": "DNA",
@@ -62,21 +60,23 @@
         "Cytoplasmic RNA": "RNA",
         "Small RNA": "RNA"
     },
-
-    "sampleTypes" : {
-        "TISSUE" : "Tissue",
-        "NUCLEIC_ACID" : "Nucleic Acid",
-        "ILLUMINA_LIBRARY" : "Illumina Library",
-        "ILLUMINA_LIBRARY_POOL" : "Illumina Library Pool",
-        "LIBRARY_IN_POOL" : "Library In Pool",
-        "EXISTING_SAMPLE_OR_LIBRARY" : "Existing Sample or Library"
+    "sampleTypes": {
+        "TISSUE": "Tissue",
+        "NUCLEIC_ACID": "Nucleic Acid",
+        "ILLUMINA_LIBRARY": "Illumina Library",
+        "ILLUMINA_LIBRARY_POOL": "Illumina Library Pool",
+        "LIBRARY_IN_POOL": "Library In Pool",
+        "EXISTING_SAMPLE_OR_LIBRARY": "Existing Sample or Library"
     },
-
-    "containerTypes" : {
+    "containerTypes": {
         "WELL_PLATE_96": "96 well plate",
         "WELL_PLATE_384": "384 well plate",
-        "Tube": "Tube"
+        "TUBE": "Tube"
+    },
+    "taxonTypeMap": {
+        "Eukaryota:Homo sapiens (Taxon ID:9606)": "Homo Sapiens",
+        "Eukaryota:Mus musculus (Taxon ID:10090)": "Mus Musculus",
+        "Viruses:Severe acute respiratory syndrome coronavirus 2 (Taxon ID:2697049)": "Sars-Cov-2",
+        "NOT_IN_MOH": "Ixodes Scapularis"
     }
-
-
 }
