@@ -1,5 +1,5 @@
 import re
-
+from pandas import pandas as pd
 from .manifest_error import ManifestError
 
 
@@ -9,6 +9,7 @@ class Sheet:
     def __init__(self, data_frame, headers):
         self.data_frame = data_frame
         self.headers = headers
+        self.cleaned_headers = list(map(lambda h: h.casefold(), headers))
 
         self.header_row_index = self._find_header_row_index()
         if self.header_row_index == -1:
@@ -46,7 +47,7 @@ class Sheet:
             # convert to lower case
             cleaned = cleaned.casefold()
 
-            if cleaned in self.headers:
+            if cleaned in self.cleaned_headers:
                 matched_headers.append(cleaned)
             else:
                 mismatched_headers.append(cleaned)
@@ -78,3 +79,10 @@ class Sheet:
             if row_number > MAX_ROWS_TO_CHECK:
                 break
         return -1
+
+    def add_dictionary_as_row(self, row_dictionary):
+        row_series = pd.DataFrame(data=row_dictionary, index=[0])
+        self.data_frame = pd.concat(
+            [self.data_frame, row_series], axis=0, ignore_index=True
+        )
+        print(self.data_frame)

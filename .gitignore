@@ -4,4 +4,6 @@ env/
 .env/
 __pycache__/
 .~lock.*
+output.xlsx
+
 
