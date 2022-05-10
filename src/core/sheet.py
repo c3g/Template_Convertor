@@ -85,4 +85,3 @@ class Sheet:
         self.data_frame = pd.concat(
             [self.data_frame, row_series], axis=0, ignore_index=True
         )
-        print(self.data_frame)

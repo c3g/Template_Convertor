@@ -1,16 +1,16 @@
-from pathlib import PurePath
+# from pathlib import PurePath
 import pandas
 
 from core.conversion_log import ConversionLog
 from core.manifest_error import ManifestError
-from freezeman.freezeman_template import FMSSampleSubmissionTemplate
+from freezeman.freezeman_template import FHSSampleSubmissionTemplate
 from .sample_manifest import MOHSampleManifest
 from .sample_manifest_extractor import MOHSampleManifestExtractor
 
 
 class MOHSampleManifestConversion:
     # Implements the conversion of one MOH sample manifest using files
-    def __init__(self, manifest_path, fms_template_path):
+    def __init__(self, manifest_path, fms_template_path, fms_output_file_path):
 
         # create an error logger
         self.log = ConversionLog()
@@ -18,13 +18,16 @@ class MOHSampleManifestConversion:
         # create the manifest sheet
         self.manifest_path = manifest_path
 
-        # create the freezeman sheet
+        # path to fms sample submission template file
         self.fms_template_path = fms_template_path
 
-    def doConversion(self):
+        # path where sample file will be written
+        self.fms_output_file_path = fms_output_file_path
+
+    def do_conversion(self):
         # load manifest
         try:
-            manifest = self.loadManifest(self.manifest_path)
+            manifest = self.load_manifest(self.manifest_path)
         except BaseException as err:
             raise ManifestError("Unable to initialize manifest") from err
 
@@ -32,29 +35,26 @@ class MOHSampleManifestConversion:
         samples = extractor.extract_samples()
 
         # load fms sample submission template
-        fms_template = self.load_sample_submission_template(self.fms_template_path)
+        fms_template = FHSSampleSubmissionTemplate(self.fms_template_path)
         fms_template.append_samples(samples)
-        self.save_sample_submission_template(
-            fms_template.sheet.data_frame, PurePath("data/output.xlsx")
-        )
+        fms_template.write_to_file(self.fms_output_file_path)
+        # fms_template = self.load_sample_submission_template(self.fms_template_path)
+        # fms_template.append_samples(samples)
+        # self.save_sample_submission_template(
+        #     fms_template.sheet.data_frame, PurePath("data/output.xlsx")
+        # )
 
         # For now, just print errors and warnings to console
         self.log.output_messages()
 
-        print()
-
-        # TODO remove print code
-        # for sample in samples:
-        #     print(sample)
-
-    def loadManifest(self, manifestFilePath):
+    def load_manifest(self, manifest_filepath):
         try:
-            manifestFrame = pandas.read_excel(manifestFilePath)
+            manifest_frame = pandas.read_excel(manifest_filepath)
         except Exception as err:
             raise ManifestError("Unable to parse manifest") from err
 
         try:
-            manifest = MOHSampleManifest(manifestFrame)
+            manifest = MOHSampleManifest(manifest_frame)
         except Exception as err:
             raise ManifestError(
                 "There was a problem with the manifest contents"
@@ -71,7 +71,7 @@ class MOHSampleManifestConversion:
             raise ManifestError(
                 "Unable to parse fms sample submission template"
             ) from err
-        return FMSSampleSubmissionTemplate(data_frame)
+        return FHSSampleSubmissionTemplate(data_frame)
 
     def save_sample_submission_template(self, data_frame, template_output_path):
         try:

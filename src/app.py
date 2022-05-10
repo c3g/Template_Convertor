@@ -7,9 +7,12 @@ def main():
     moh_file_url = (
         "file:///home/ckostiw/dev/freezerman/template_convertor/data/MOH-TEST.xlsx"
     )
+    output_file_path = PurePath("data/output.xlsx")
 
-    conversion = MOHSampleManifestConversion(moh_file_url, fms_template_file_path)
-    conversion.doConversion()
+    conversion = MOHSampleManifestConversion(
+        moh_file_url, fms_template_file_path, output_file_path
+    )
+    conversion.do_conversion()
 
     print("DONE")
 

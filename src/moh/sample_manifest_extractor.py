@@ -1,3 +1,4 @@
+from datetime import date
 from types import SimpleNamespace
 import re
 from pandas import pandas as pd
@@ -90,6 +91,8 @@ class MOHSampleManifestExtractor:
         self._extract_individual(row, sample_ns)
 
         sample_ns.COMMENT = self._extract_value(row, MOHHeaders.COMMENTS)
+
+        sample_ns.RECEPTION_DATE = date.today().isoformat()
 
         return sample_ns
 
