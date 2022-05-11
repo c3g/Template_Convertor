@@ -10,7 +10,9 @@ from .sample_manifest_extractor import MOHSampleManifestExtractor
 
 class MOHSampleManifestConversion:
     # Implements the conversion of one MOH sample manifest using files
-    def __init__(self, manifest_path, fms_template_path, fms_output_file_path):
+    def __init__(
+        self, manifest_path, fms_template_path, fms_output_file_path, log_file_path
+    ):
 
         # create an error logger
         self.log = ConversionLog()
@@ -23,6 +25,9 @@ class MOHSampleManifestConversion:
 
         # path where sample file will be written
         self.fms_output_file_path = fms_output_file_path
+
+        # path where log will be written
+        self.log_file_path = log_file_path
 
     def do_conversion(self):
         # load manifest
@@ -38,14 +43,10 @@ class MOHSampleManifestConversion:
         fms_template = FHSSampleSubmissionTemplate(self.fms_template_path)
         fms_template.append_samples(samples)
         fms_template.write_to_file(self.fms_output_file_path)
-        # fms_template = self.load_sample_submission_template(self.fms_template_path)
-        # fms_template.append_samples(samples)
-        # self.save_sample_submission_template(
-        #     fms_template.sheet.data_frame, PurePath("data/output.xlsx")
-        # )
 
         # For now, just print errors and warnings to console
         self.log.output_messages()
+        self.log.write_log(self.log_file_path)
 
     def load_manifest(self, manifest_filepath):
         try:

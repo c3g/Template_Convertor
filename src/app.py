@@ -9,8 +9,10 @@ def main():
     )
     output_file_path = PurePath("data/output.xlsx")
 
+    log_file_path = PurePath("data/output.log")
+
     conversion = MOHSampleManifestConversion(
-        moh_file_url, fms_template_file_path, output_file_path
+        moh_file_url, fms_template_file_path, output_file_path, log_file_path
     )
     conversion.do_conversion()
 
