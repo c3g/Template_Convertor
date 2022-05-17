@@ -50,7 +50,11 @@ class MOHSampleManifestConversion:
 
     def load_manifest(self, manifest_filepath):
         try:
-            manifest_frame = pandas.read_excel(manifest_filepath)
+            manifest_frame = pandas.read_excel(manifest_filepath, header=None)
+
+            # for row in manifest_frame.iterrows():
+            #     print(row)
+
         except Exception as err:
             raise ManifestError("Unable to parse manifest") from err
 

@@ -41,5 +41,14 @@
         "TUBE_STRIP_6X1": "Tube Strip 6x1",
         "TUBE_STRIP_7X1": "Tube Strip 7x1",
         "TUBE_STRIP_8X1": "Tube Strip 8x1"
+    },
+    "library_types": {
+        "PCR_FREE": "PCR-free",
+        "PCR_ENRICHED" : "PCR-enriched",
+        "RNA_SEQ" : "RNASeq",
+        "WGBS" : "WGBS",
+        "T_16S" : "16S",
+        "T_18S" : "18S",
+        "MI_RNA" : "miRNA"
     }
 }

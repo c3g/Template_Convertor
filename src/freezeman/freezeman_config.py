@@ -1,5 +1,7 @@
 import json
 
+from moh.moh_config import LIBRARY_TYPES
+
 
 # Load the freezeman json data file, which contains symbols for the freezeman
 # template.
@@ -15,3 +17,4 @@ except (OSError) as err:
 # Create some symbols so that sub-dictionaries can be imported easily
 HEADERS = FMConfig["headers"]
 CONTAINER_KIND = FMConfig["containerKind"]
+LIBRARY_TYPES = FMConfig["library_types"]

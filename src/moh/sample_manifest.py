@@ -13,6 +13,6 @@ class MOHSampleManifest(Sheet):
         # are blank rows. We keep all rows where the sample name is not NaN.
         # TODO maybe we should also get rid of the rows above and including the column header row
         # and simply have a table of samples?
-        self.data_frame = self.data_frame[
-            pd.notna(self.data_frame[HEADERS["SAMPLE_NAME"]])
-        ]
+        # self.data_frame = self.data_frame[
+        #     pd.notna(self.data_frame[HEADERS["SAMPLE_NAME"]])
+        # ]

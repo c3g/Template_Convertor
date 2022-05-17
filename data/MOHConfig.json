@@ -27,7 +27,7 @@
         "LIBRARY_SIZE": "library size (bases)",
         "NUMBER_IN_POOL": "number in pool",
         "LIBRARY_TYPE": "library type",
-        "LIBRARY_INDEX_SIZE": "library index series",
+        "LIBRARY_INDEX_SERIES": "library index series",
         "LIBRARY_INDEX_NAME": "library index name",
         "ADAPTER_TYPE": "adapter type",
         "I7_INDEX": "i7 index",
@@ -78,5 +78,30 @@
         "Eukaryota:Mus musculus (Taxon ID:10090)": "Mus Musculus",
         "Viruses:Severe acute respiratory syndrome coronavirus 2 (Taxon ID:2697049)": "Sars-Cov-2",
         "NOT_IN_MOH": "Ixodes Scapularis"
+    },
+    "concentration_units": {
+        "NG_UL": "ng/uL"
+    },
+    "library_types": {
+        "PCR_FREE" : "PCR-free",
+        "PCR_ENRICHED" : "PCR-enriched",
+        "WGBS" : "WGBS",
+        "RNA_SEQ" : "RNASeq",
+        "ATAC_SEQ" : "ATACSeq",
+        "CHIP_SEQ" : "ChIPSeq",
+        "G10X_GDNA" : "10x Genomics Linked Reads gDNA",
+        "G10X_RNA" : "10x Genomics Single Cell RNA",
+        "G10X_CNV" : "10x Genomics Single Cell CNV",
+        "G10X_VS_RNA" : "10x Genomics Single Cell Visium Spatial RNA",
+        "G10X_BARCODE" : "10x Genomics Single Cell Feature Barcode",
+        "G10X_ATAC" : "10x Genomics Single Cell ATAC",
+        "G10X_V_D_J" : "10x Genomics Single Cell V-D-J",
+        "MCC" : "MCC",
+        "EXOME" : "Exome",
+        "HIC" : "HiC",
+        "HALO_PLEX" : "HaloPlex",
+        "PANEL" : "Panel",
+        "AMPLICON_DNA" : "Amplicon DNA",
+        "AMPLICON_RNA" : "Amplicon RNA"
     }
 }
