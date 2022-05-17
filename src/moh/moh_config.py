@@ -2,7 +2,7 @@ import json
 
 # Load the MOH_DATA json data file, which contains tables for mapping MOH
 # values to freezeman values.
-MOH_CONFIG_FILE_PATH = "data/MOHConfig.json"
+MOH_CONFIG_FILE_PATH = "config/MOHConfig.json"
 
 
 try:

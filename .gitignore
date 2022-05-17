@@ -5,7 +5,7 @@ env/
 __pycache__/
 .~lock.*
 output.xlsx
-
+~*
 
 data/output.log
 data/~$output.xlsx
