@@ -186,6 +186,8 @@ class MOHSampleManifestExtractor:
 
             return fm_nucleic_type
 
+        else:
+            self._log_error(f"Unsupported sample type: {moh_type}")
         return None
 
     def _extract_container(self, row, sample_ns):
@@ -272,22 +274,7 @@ class MOHSampleManifestExtractor:
 
         
     def extract_library(self, row, sample_ns):
-
-        library_type = self._extract_value(row, MOHHeaders.LIBRARY_TYPE)
-        if library_type is None:
-            return
-        
-        # TODO Are there other MOH library types that would match freezeman types?
-        match library_type:
-            case MOH_LIBRARY_TYPES.PCR_FREE:
-                sample_ns.LIBRARY_TYPE = FMS_LIBRARY_TYPES.PCR_FREE
-            case MOH_LIBRARY_TYPES.PCR_ENRICHED:
-                sample_ns.LIBRARY_TYPE = FMS_LIBRARY_TYPES.PCR_ENRICHED
-            case MOH_LIBRARY_TYPES.RNA_SEQ:
-                sample_ns.LIBRARY_TYPE = FMS_LIBRARY_TYPES.RNA_SEQ
-            case MOH_LIBRARY_TYPES.WGBS:
-                sample_ns.LIBARY_TYPE = FMS_LIBRARY_TYPES.WGBS
-            case _:
-                self._log_error(f"Library type {library_type} is not supported.")        
+        # libraries are not supported by this tool
+        pass
 
         
