@@ -130,9 +130,13 @@ class MOHSampleManifestExtractor:
 
         self._extract_individual(row, sample_ns)
 
+        self._extract_volume_and_concentration(row, sample_ns)
+
         sample_ns.COMMENT = self._extract_value(row, MOHHeaders.COMMENTS)
 
-        sample_ns.RECEPTION_DATE = date.today().isoformat()
+        # Populating the reception date with today's date may lead to errors.
+        # It is better to leave the date empty so that the user knows they need to provide the proper date.
+        # sample_ns.RECEPTION_DATE = date.today().isoformat()
 
         return sample_ns
 
@@ -157,12 +161,13 @@ class MOHSampleManifestExtractor:
                 self._log_error("Tissue type is not specified for tissue sample")
                 return None
 
-            fm_sample_type = TISSUE_TYPE_MAP[moh_tissue_type]
-            if fm_sample_type is None:
+            if moh_tissue_type in TISSUE_TYPE_MAP:
+                fm_sample_type = TISSUE_TYPE_MAP[moh_tissue_type]
+            else:
+                fm_sample_type = None
                 self._log_error(
                     f"Unknown tissue type for tissue sample: {moh_tissue_type}"
                 )
-
             return fm_sample_type
 
             # map moh tissue type to freezeman sample type
@@ -186,30 +191,39 @@ class MOHSampleManifestExtractor:
     def _extract_container(self, row, sample_ns):
 
         container_type = self._extract_value(row, MOHHeaders.CONTAINER_TYPE)
+        container_name = self._extract_value(row, MOHHeaders.CONTAINER_NAME)
+        container_barcode = self._extract_value(row, MOHHeaders.CONTAINER_BARCODE)
+        well = self._extract_value(row, MOHHeaders.WELL)
+
+        # Emit an error if the container type is None but other container fields contain data.
+        # If there is no container data in any field then just return.
         if container_type is None:
-            self._log_warning("Container type is not specified")
-        elif not container_type in CONTAINER_TYPES.values():
-            self._log_error(f"Container type is not supported: {container_type}")
+            if container_name is not None or container_name is not None or well is not None:
+                self._log_error("Container type must be specified")
+            else:
+                return
 
-        if container_type == MOHContainerTypes.TUBE:
-            # The well column contains the coord of the tube in its tube stand
-            sample_ns.CONTAINER_COORD = self._extract_value(row, MOHHeaders.WELL)
-            sample_ns.CONTAINER_KIND = FMSContainerKind.TUBE
-        elif container_type == MOHContainerTypes.WELL_PLATE_96:
-            sample_ns.SAMPLE_COORD = self._extract_value(row, MOHHeaders.WELL)
-            sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_96
-        elif container_type == MOHContainerTypes.WELL_PLATE_384:
-            sample_ns.SAMPLE_COORD = self._extract_value(row, MOHHeaders.WELL)
-            sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_384
-        else:
-            self._log_error(f"Container type is not supported: {container_type}")
+        if container_type is not None:
+            # make sure the container type is one of the expected types
+            if not container_type in CONTAINER_TYPES.values():
+                self._log_error(f"Container type is not supported: {container_type}")
+            else:
+                if container_type == MOHContainerTypes.TUBE:
+                    # The well column contains the coord of the tube in its tube stand
+                    sample_ns.CONTAINER_COORD = self._extract_value(row, MOHHeaders.WELL)
+                    sample_ns.CONTAINER_KIND = FMSContainerKind.TUBE
+                elif container_type == MOHContainerTypes.WELL_PLATE_96:
+                    sample_ns.SAMPLE_COORD = self._extract_value(row, MOHHeaders.WELL)
+                    sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_96
+                elif container_type == MOHContainerTypes.WELL_PLATE_384:
+                    sample_ns.SAMPLE_COORD = self._extract_value(row, MOHHeaders.WELL)
+                    sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_384
+                else:
+                    self._log_error(f"Container type is unexpected: {container_type}")
 
-        sample_ns.CONTAINER_NAME = self._extract_value(row, MOHHeaders.CONTAINER_NAME)
-        sample_ns.CONTAINER_BARCODE = self._extract_value(
-            row, MOHHeaders.CONTAINER_BARCODE
-        )
+        sample_ns.CONTAINER_NAME = container_name
+        sample_ns.CONTAINER_BARCODE = container_barcode
 
-        # TODO Which warning/error messages would be useful here, and which would just be noise?
 
     def _extract_individual(self, row, sample_ns):
         # Individual ID
@@ -226,8 +240,9 @@ class MOHSampleManifestExtractor:
         # Should we copy the taxon anyway and let the user decide what they want to do?
         taxon = self._extract_value(row, MOHHeaders.SPECIES)
         if taxon is not None:
-            sample_ns.TAXON = TAXON_TYPE_MAP[taxon]
-            if sample_ns.TAXON is None:
+            if taxon in TAXON_TYPE_MAP:
+                sample_ns.TAXON = TAXON_TYPE_MAP[taxon]
+            else:
                 self._log_warning(f"Unsupported taxon type: {taxon}")
 
         # If cohort, sex, or taxon are specified then freezeman also requires
@@ -237,7 +252,7 @@ class MOHSampleManifestExtractor:
                 self._log_error("Individual ID must be specified if cohort, sex or taxon is specified.")
 
 
-    def extract_volume_and_concentration(self, row, sample_ns):
+    def _extract_volume_and_concentration(self, row, sample_ns):
         # "VOLUME"
         # "CONCENTRATION"
         # "CONCENTRATION_UNITS"
@@ -249,9 +264,10 @@ class MOHSampleManifestExtractor:
         if concentration_units is not None:
             # freezeman only allows ng/uL. If the concentration is in any other units
             # then ignore the concentration.
-            if concentration_units == CONCENTRATION_UNITS.NG_UL:
+            if concentration_units == CONCENTRATION_UNITS["NG_UL"]:
                 sample_ns.CONCENTRATION = concentration
             else:
+                sample_ns.concentration = None
                 self._log_error(f"Concentration must be specified in ng/uL. {concentration_units} is not supported.")
 
         
