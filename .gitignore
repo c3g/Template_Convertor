@@ -11,3 +11,7 @@ data/output.log
 data/~$output.xlsx
 data/~$MOH-TEST.xlsx
 
+distribute/build
+distribute/dist
+
+

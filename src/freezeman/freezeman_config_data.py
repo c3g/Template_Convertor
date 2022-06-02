@@ -1,4 +1,4 @@
-{
+FMConfig = {
     "headers": {
         "SAMPLE_KIND": "Sample Kind",
         "SAMPLE_NAME": "Sample Name",

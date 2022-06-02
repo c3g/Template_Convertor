@@ -1,4 +1,4 @@
-{
+MOHConfig = {
     "headers": {
         "MANDATORY_FIELDS": "mandatory fields",
         "SAMPLE_TYPE": "sample type",
