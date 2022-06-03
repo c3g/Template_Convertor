@@ -132,7 +132,7 @@ class MOHSampleManifestExtractor:
 
         self._extract_volume_and_concentration(row, sample_ns)
 
-        sample_ns.COMMENT = self._extract_value(row, MOHHeaders.COMMENTS)
+        sample_ns.COMMENT = self._extract_value(row, MOHHeaders.COMMENTS, force_string=True)
 
         # Populating the reception date with today's date may lead to errors.
         # It is better to leave the date empty so that the user knows they need to provide the proper date.
@@ -140,10 +140,19 @@ class MOHSampleManifestExtractor:
 
         return sample_ns
 
-    def _extract_value(self, row, header_name):
+    def _extract_value(self, row, header_name, force_string = False):
+        """
+        Extract a value from a cell. If the value is NaN return None.
+        If force_string is True then the value will be converted to a string,
+        unless it is None, in which case None is returned (and not 'None')
+        """
         value = row[header_name]
         if pd.isna(value):
             value = None
+
+        if force_string:
+            if value is not None:
+                value = str(value)
         return value
 
     def _extract_sample_type(self, row):
@@ -212,19 +221,28 @@ class MOHSampleManifestExtractor:
             else:
                 if container_type == MOHContainerTypes.TUBE:
                     # The well column contains the coord of the tube in its tube stand
-                    sample_ns.CONTAINER_COORD = self._extract_value(row, MOHHeaders.WELL)
+                    # sample_ns.CONTAINER_COORD = well
                     sample_ns.CONTAINER_KIND = FMSContainerKind.TUBE
-                elif container_type == MOHContainerTypes.WELL_PLATE_96:
-                    sample_ns.SAMPLE_COORD = self._extract_value(row, MOHHeaders.WELL)
-                    sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_96
-                elif container_type == MOHContainerTypes.WELL_PLATE_384:
-                    sample_ns.SAMPLE_COORD = self._extract_value(row, MOHHeaders.WELL)
-                    sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_384
+                    sample_ns.CONTAINER_NAME = well
+                    
+                    # if no tube barcode is specified, use the sample name as the barcode
+                    if container_barcode is None:
+                        sample_ns.CONTAINER_BARCODE = self._extract_value(row, MOHHeaders.SAMPLE_NAME)
+
+                    # if a barcode is provided for the tube carrier, use it for the location barcode
+                    sample_ns.LOCATION_BARCODE = self._extract_value(row, MOHHeaders.TUBE_CARRIER_BARCODE)
+                    
+                elif container_type == MOHContainerTypes.WELL_PLATE_96 or container_type == MOHContainerTypes.WELL_PLATE_384:
+                    if container_type == MOHContainerTypes.WELL_PLATE_96:
+                        sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_96
+                    else:
+                        sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_384
+
+                    sample_ns.SAMPLE_COORD = self._normalize_well(well)
+                    sample_ns.CONTAINER_BARCODE = container_barcode
+                    sample_ns.CONTAINER_NAME = container_name
                 else:
                     self._log_error(f"Container type is unexpected: {container_type}")
-
-        sample_ns.CONTAINER_NAME = container_name
-        sample_ns.CONTAINER_BARCODE = container_barcode
 
 
     def _extract_individual(self, row, sample_ns):
@@ -232,9 +250,9 @@ class MOHSampleManifestExtractor:
         # Cohort ID
         # Species
         # Sex
-        sample_ns.INDIVIDUAL_ID = self._extract_value(row, MOHHeaders.INDIVIDUAL_ID)
+        sample_ns.INDIVIDUAL_ID = self._extract_value(row, MOHHeaders.INDIVIDUAL_ID, force_string=True)
         
-        sample_ns.COHORT = self._extract_value(row, MOHHeaders.COHORT_ID)
+        sample_ns.COHORT = self._extract_value(row, MOHHeaders.COHORT_ID, force_string=True)
 
         sample_ns.SEX = self._extract_value(row, MOHHeaders.SEX)
 
@@ -251,9 +269,15 @@ class MOHSampleManifestExtractor:
         # an indvidual ID
         if sample_ns.COHORT is not None or sample_ns.SEX is not None or sample_ns.TAXON is not None:
             if sample_ns.INDIVIDUAL_ID is None:
-                self._log_error("Individual ID must be specified if cohort, sex or taxon is specified.")
-
-
+                # For MOH, the individual id is part of the sample name.
+                # If the sample name conforms to the MoH naming convention then extract the
+                # individual id.
+                moh_name = self._extract_individual_id_from_sample_name(self._extract_value(row, MOHHeaders.SAMPLE_NAME))
+                if moh_name is not None:
+                    sample_ns.INDIVIDUAL_ID = moh_name
+                else:
+                    self._log_error("Individual ID must be specified if cohort, sex or taxon is specified.")
+               
     def _extract_volume_and_concentration(self, row, sample_ns):
         # "VOLUME"
         # "CONCENTRATION"
@@ -273,8 +297,33 @@ class MOHSampleManifestExtractor:
                 self._log_error(f"Concentration must be specified in ng/uL. {concentration_units} is not supported.")
 
         
-    def extract_library(self, row, sample_ns):
+    def _extract_library(self, row, sample_ns):
         # libraries are not supported by this tool
         pass
 
+    def _extract_individual_id_from_sample_name(self, sample_name):
+        # Match MoH names like MoHQ-GC-15-80-FT1-1RT
+        # If matched, return the first four segments, eg. MoHQ-GC-15-80,
+        # which is the individual id.
+        if sample_name:
+            match = re.match(r'(MoH.-\w+-\w+-\w+)-.*', sample_name)
+            if match:
+                return match[1]
+        return None
+
+    def _normalize_well(self, well):
+        """
+        Freezeman expects well coordinates to contain a letter followed by two
+        digits, with a zero to pad the digit if necessary, eg "A01". 
         
+        MOH doesn't use the padding, so we have to add it.
+
+        eg. A1 is converted to A01
+        """
+        if well:
+            if len(well) == 2:  
+                match = re.match(r'[A-P][1-9]', well)
+                if match:
+                    well = f'{well[0]}0{well[1]}'
+        return well
+
