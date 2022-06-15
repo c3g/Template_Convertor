@@ -1,4 +1,6 @@
+import os
 from pathlib import PurePath
+import sys
 import click
 from moh.sample_manifest_conversion import MOHSampleManifestConversion
 
@@ -7,8 +9,21 @@ from moh.sample_manifest_conversion import MOHSampleManifestConversion
 # -m : sample manifest file path
 # -o : output file path (optional)
 
+
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 # Path to the empty fms template
-fms_template_file_path = PurePath("config/fms_sample_submission_template.xlsx")
+fms_template_file_path = resource_path(PurePath("config/fms_sample_submission_template.xlsx"))
 
 @click.group()
 def cli():
