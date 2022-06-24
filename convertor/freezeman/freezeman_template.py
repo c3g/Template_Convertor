@@ -3,7 +3,7 @@
 # Append each sample, setting each sample value in the appropriate column
 # Write out the template to disk?
 from openpyxl import load_workbook
-from freezeman.freezeman_config import HEADERS
+from .freezeman_config import HEADERS
 
 
 class FHSSampleSubmissionTemplate:

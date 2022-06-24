@@ -1,6 +1,6 @@
 import re
 from pandas import pandas as pd
-from core.manifest_error import ManifestError
+from ..core import ManifestError
 from .moh_config import HEADERS
 
 

@@ -2,18 +2,16 @@ from datetime import date
 from types import SimpleNamespace
 import re
 from pandas import pandas as pd
-from core.conversion_log import ConversionLog
-from freezeman.freezeman_config import CONTAINER_KIND, HEADERS as FMS_HEADERS, LIBRARY_TYPES as FMS_LIBRARY_TYPES
+from ..core import ConversionLog
+from ..freezeman import CONTAINER_KIND, HEADERS as FMS_HEADERS
 from .moh_config import (
     HEADERS,
-    LIBRARY_TYPES,
     SAMPLE_TYPES,
     CONTAINER_TYPES,
     TISSUE_TYPE_MAP,
     NUCLEIC_ACID_TYPE_MAP,
     TAXON_TYPE_MAP,
     CONCENTRATION_UNITS,
-    LIBRARY_TYPES as MOH_LIBRARY_TYPES
 )
 from .sample_manifest import MOHSampleManifest
 
