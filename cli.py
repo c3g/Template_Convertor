@@ -1,8 +1,7 @@
 from pathlib import PurePath
-from io import StringIO
 import sys
 import click
-from moh.sample_manifest_conversion import MOHSampleManifestConversion
+from convertor import MOHSampleManifestConversion
 
 # Command line interface
 #
