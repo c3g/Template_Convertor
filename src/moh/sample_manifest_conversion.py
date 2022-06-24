@@ -11,30 +11,29 @@ from .sample_manifest_extractor import MOHSampleManifestExtractor
 class MOHSampleManifestConversion:
     # Implements the conversion of one MOH sample manifest using files
     def __init__(
-        self, manifest_path, fms_template_path, fms_output_file_path, log_file_path
+        self, manifest_stream, fms_template_path, fms_output_stream
     ):
 
         # create an error logger
         self.log = ConversionLog()
 
         # create the manifest sheet
-        self.manifest_path = manifest_path
+        self.manifest_stream = manifest_stream
 
         # path to fms sample submission template file
         self.fms_template_path = fms_template_path
 
-        # path where sample file will be written
-        self.fms_output_file_path = fms_output_file_path
-
-        # path where log will be written
-        self.log_file_path = log_file_path
+        # A writable file stream, to receive the output.
+        self.fms_output_file_stream = fms_output_stream
 
     def do_conversion(self):
         # load manifest
         try:
-            manifest = self.load_manifest(self.manifest_path)
+            manifest = self.load_manifest(self.manifest_stream)
         except BaseException as err:
-            raise ManifestError("Unable to initialize manifest") from err
+            self.log.add_general_message('Sample manifest could not be loaded')
+            self.log.add_general_message(err)
+            raise ManifestError("Unable to initialize MOH manifest") from err
 
         extractor = MOHSampleManifestExtractor(manifest, self.log)
         samples = extractor.extract_samples()
@@ -42,19 +41,12 @@ class MOHSampleManifestConversion:
         # load fms sample submission template
         fms_template = FHSSampleSubmissionTemplate(self.fms_template_path)
         fms_template.append_samples(samples)
-        fms_template.write_to_file(self.fms_output_file_path)
+        fms_template.write_to_file(self.fms_output_file_stream)
 
-        # For now, just print errors and warnings to console
-        self.log.output_messages()
-        self.log.write_log(self.log_file_path)
 
     def load_manifest(self, manifest_filepath):
         try:
             manifest_frame = pandas.read_excel(manifest_filepath, header=None)
-
-            # for row in manifest_frame.iterrows():
-            #     print(row)
-
         except Exception as err:
             raise ManifestError("Unable to parse manifest") from err
 

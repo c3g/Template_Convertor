@@ -1,4 +1,6 @@
 from pathlib import PurePath
+from io import StringIO
+import sys
 import click
 from moh.sample_manifest_conversion import MOHSampleManifestConversion
 
@@ -27,17 +29,29 @@ def convert(manifest_file_path, output_path):
     else:
         output = PurePath(output_path)
 
-    log = output.with_name(output.stem + ".log")
+    log_path = output.with_name(output.stem + ".log")
 
     print(manifest)
     print(output)
-    print(log)
+    print(log_path)
 
     conversion = MOHSampleManifestConversion(
-        manifest, fms_template_file_path, output, log
+        manifest, fms_template_file_path, output
     )
-    conversion.do_conversion()
-
+    try:
+        conversion.do_conversion()
+    except Exception as e:
+        # Capture any exception so that we can still write the log file
+        sys.stderr.write('Conversion failed')
+        sys.stderr.write(str(e))
+    finally:
+        # Write log no matter what happens, since we capture exception
+        # messages in the log
+        conversion.log.output_messages()
+        # Write log file
+        with open(log_path, "w", encoding="utf-8") as log_file:
+            conversion.log.write_log(log_file)
+           
     print("DONE")
 
 
