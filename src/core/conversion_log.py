@@ -35,25 +35,24 @@ class ConversionLog:
             for warning_message in messages["warnings"]:
                 print(f"Row {row_number}: WARNING: {warning_message}")
 
-    def write_log(self, log_path):
+    def write_log(self, log_stream):
         # TODO pass an open file stream to this function rather than opening the file here
 
         # count the number of errors and warnings
         num_messages = 0
         for msgs in self.row_messages.values():
             num_messages += len(msgs["errors"]) + len(msgs["warnings"])
+       
+        log_stream.write("Conversion log\n")
 
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            log_file.write("Conversion log\n")
+        for general_message in self.general_messages:
+            log_stream.write(f"{general_message}\n")
 
-            for general_message in self.general_messages:
-                log_file.write(f"{general_message}\n")
-
-            if num_messages == 0:
-                log_file.write("No errors or warnings\n")
-            else:
-                for (row_number, messages) in self.row_messages.items():
-                    for msg in messages["errors"]:
-                        log_file.write(f"Row {row_number}: ERROR:   {msg}\n")
-                    for msg in messages["warnings"]:
-                        log_file.write(f"Row {row_number}: WARNING: {msg}\n")
+        if num_messages == 0:
+            log_stream.write("No errors or warnings\n")
+        else:
+            for (row_number, messages) in self.row_messages.items():
+                for msg in messages["errors"]:
+                    log_stream.write(f"Row {row_number}: ERROR:   {msg}\n")
+                for msg in messages["warnings"]:
+                    log_stream.write(f"Row {row_number}: WARNING: {msg}\n")
