@@ -63,6 +63,8 @@ def handle_upload():
 def reset():
     state.reset()
 
+
+
     
 # Components
 st.title('Freezeman MGC Template Converter')
@@ -84,15 +86,30 @@ elif state.freezeman_template is not None and state.conversion_log is not None:
     else:
          st.success(f'{state.uploaded_template.name} was converted successfully')
 
-    # Display download and reset buttons in columns
-    col1, col2 = st.columns([3, 1])
-
+    # Display a centered download button
+    col1, col2, col3 = st.columns([1, 3, 1])
     with col1:
-        # display a download button for the converted file
-        st.download_button(f'Download {state.freezeman_template_name}', data=state.freezeman_template, file_name=state.freezeman_template_name, help='Click to download the converted file')
+        pass
     with col2:
-        # display a reset button to go back to upload state
-        st.button('Convert another file', on_click=reset, help='Click to upload another file')
+        # display a download button for the converted file
+        FILE_EMOJI = '📄'   # unicode U+1F4C4
+        st.download_button(
+            f'{FILE_EMOJI} Download {state.freezeman_template_name}', 
+            data=state.freezeman_template, 
+            file_name=state.freezeman_template_name, 
+            help='Click to download the converted file')
+    with col3:
+        pass
+
+    # with col1:
+    #     # display a download button for the converted file
+    #     st.download_button(f'Download {state.freezeman_template_name}', data=state.freezeman_template, file_name=state.freezeman_template_name, help='Click to download the converted file')
+    # with col2:
+    #     # display a reset button to go back to upload state
+    #     st.button('Convert another file', on_click=reset, help='Click to upload another file')
+
+    # display a reset button to go back to upload state
+    st.button('Convert another file', on_click=reset, help='Click to upload another file')
 
     # list log errors and warnings
     st.subheader('Messages')
