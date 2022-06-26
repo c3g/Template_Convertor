@@ -23,6 +23,9 @@ class ConversionLog:
         self._add_row(row_number)
         self.row_messages[row_number]["warnings"].append(warning_message)
 
+    def has_errors_or_warnings(self):
+        return len(self.row_messages) > 0
+
     def output_messages(self):
         for general_message in self.general_messages:
             print(general_message)
