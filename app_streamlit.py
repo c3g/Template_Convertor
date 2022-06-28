@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from io import BytesIO
 from lib2to3.pytree import convert
 from pathlib import PurePath
-from typing import BinaryIO
+from typing import BinaryIO, Optional
 import streamlit as st
 from os.path import splitext
 from convertor import MOHSampleManifestConversion
@@ -11,11 +11,11 @@ from convertor.freezeman import freezeman_template
 
 @dataclass
 class ConversionState:
-    uploaded_template: None | BinaryIO = None
-    freezeman_template: None | BinaryIO = None
-    freezeman_template_name: None | str = None
-    conversion_log: None | ConversionLog = None
-    conversion_error: None | Exception = None
+    uploaded_template: Optional[BinaryIO] = None
+    freezeman_template: Optional[BinaryIO] = None
+    freezeman_template_name: Optional[str] = None
+    conversion_log: Optional[ConversionLog] = None
+    conversion_error: Optional[Exception] = None
 
     def reset(self):
         self.uploaded_template = None
