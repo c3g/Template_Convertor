@@ -9,6 +9,8 @@ This is a small project for converting MOH sample submission templates to the Fr
 ### Streamlit
 `streamlit run app_streamlit.py`
 
+The project contains a streamlit config file `.streamlit/config.toml`.
+
 ---
 ### CLI
 `python -m cli convert <MOH file path>`
