@@ -5,6 +5,7 @@ from pathlib import PurePath
 from typing import BinaryIO, Optional
 import streamlit as st
 from os.path import splitext
+from common import FMS_SUBMISSION_TEMPLATE_PATH
 from convertor import MOHSampleManifestConversion
 from convertor.core.conversion_log import ConversionLog
 from convertor.freezeman import freezeman_template
@@ -39,7 +40,7 @@ def handle_upload():
         state.uploaded_template = st.session_state.file_uploader
     
         # Do the conversion, outputing to a BytesIO stream
-        freezeman_template = PurePath("config/fms_sample_submission_template.xlsx")
+        freezeman_template = PurePath(FMS_SUBMISSION_TEMPLATE_PATH)
         output_stream = BytesIO()
 
         convertor = MOHSampleManifestConversion(state.uploaded_template, freezeman_template, output_stream)

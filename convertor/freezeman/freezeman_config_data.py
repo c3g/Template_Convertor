@@ -14,6 +14,7 @@ FMConfig = {
         "LOCATION_BARCODE": "Location Barcode",
         "CONTAINER_COORD": "Container Coord",
         "INDIVIDUAL_ID": "Individual ID",
+        "INDIVIDUAL_ALIAS": "Individual Alias",
         "SEX": "Sex",
         "PEDIGREE": "Pedigree",
         "MOTHER_ID": "Mother ID",
