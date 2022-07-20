@@ -1,6 +1,7 @@
 from pathlib import PurePath
 import sys
 import click
+from common import FMS_SUBMISSION_TEMPLATE_PATH
 from convertor import MOHSampleManifestConversion
 
 # Command line interface
@@ -9,7 +10,7 @@ from convertor import MOHSampleManifestConversion
 # -o : output file path (optional)
 
 # Path to the empty fms template
-fms_template_file_path = PurePath("config/fms_sample_submission_template.xlsx")
+fms_template_file_path = PurePath(FMS_SUBMISSION_TEMPLATE_PATH)
 
 @click.group()
 def cli():

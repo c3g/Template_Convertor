@@ -4,6 +4,7 @@ from typing import Union
 
 from fastapi import FastAPI, File
 from fastapi.responses import HTMLResponse
+from common import FMS_SUBMISSION_TEMPLATE_PATH
 
 from convertor import MOHSampleManifestConversion
 
@@ -40,7 +41,7 @@ def convert_template(filename: str = "output", template: bytes = File()):
     either zip them to create a single response, or return the log, 
     cache the converted file, and provide a second end-point to get the converted file.
     """
-    fms_template_file_path = PurePath("config/fms_sample_submission_template.xlsx")
+    fms_template_file_path = PurePath(FMS_SUBMISSION_TEMPLATE_PATH)
     output_file_name = PurePath(filename or 'output').stem + ".fms" + ".xlsx"
 
     output_file = BytesIO()
