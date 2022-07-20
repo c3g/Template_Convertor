@@ -202,7 +202,7 @@ class MOHSampleManifestExtractor:
         container_type = self._extract_value(row, MOHHeaders.CONTAINER_TYPE)
         container_name = self._extract_value(row, MOHHeaders.CONTAINER_NAME)
         container_barcode = self._extract_value(row, MOHHeaders.CONTAINER_BARCODE)
-        well = self._extract_value(row, MOHHeaders.WELL)
+        well = self._normalize_well(self._extract_value(row, MOHHeaders.WELL))
 
         # Emit an error if the container type is None but other container fields contain data.
         # If there is no container data in any field then just return.
@@ -221,14 +221,21 @@ class MOHSampleManifestExtractor:
                     # The well column contains the coord of the tube in its tube stand
                     # sample_ns.CONTAINER_COORD = well
                     sample_ns.CONTAINER_KIND = FMSContainerKind.TUBE
-                    sample_ns.CONTAINER_NAME = well
+                    sample_ns.CONTAINER_NAME = container_name
                     
-                    # if no tube barcode is specified, use the sample name as the barcode
+                    # If no tube barcode is specified, default to the sample name as the barcode
                     if container_barcode is None:
                         sample_ns.CONTAINER_BARCODE = self._extract_value(row, MOHHeaders.SAMPLE_NAME)
+                    else:
+                        sample_ns.CONTAINER_BARCODE = container_barcode
 
-                    # if a barcode is provided for the tube carrier, use it for the location barcode
-                    sample_ns.LOCATION_BARCODE = self._extract_value(row, MOHHeaders.TUBE_CARRIER_BARCODE)
+                    # Tube carrier
+                    # If the tube is shipped in a tube carrier set the fms location barcode to the
+                    # tube carrier barcode, and the fms container coord to the well.
+                    tube_carrier_barcode = self._extract_value(row, MOHHeaders.TUBE_CARRIER_BARCODE)
+                    if tube_carrier_barcode is not None:
+                        sample_ns.LOCATION_BARCODE = tube_carrier_barcode
+                        sample_ns.CONTAINER_COORD = well
                     
                 elif container_type == MOHContainerTypes.WELL_PLATE_96 or container_type == MOHContainerTypes.WELL_PLATE_384:
                     if container_type == MOHContainerTypes.WELL_PLATE_96:
@@ -236,7 +243,7 @@ class MOHSampleManifestExtractor:
                     else:
                         sample_ns.CONTAINER_KIND = FMSContainerKind.WELL_PLATE_384
 
-                    sample_ns.SAMPLE_COORD = self._normalize_well(well)
+                    sample_ns.SAMPLE_COORD = well
                     sample_ns.CONTAINER_BARCODE = container_barcode
                     sample_ns.CONTAINER_NAME = container_name
                 else:
