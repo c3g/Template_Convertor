@@ -118,6 +118,7 @@ elif state.freezeman_template is not None and state.conversion_log is not None:
     with st.container():
         for msg in state.conversion_log.general_messages:
             st.caption(msg)
+        st.caption('Note that even if errors or warnings appear below, you can still download the template and correct problems manually.')
         for row_number, row_messages in state.conversion_log.row_messages.items():
             for error_message in row_messages['errors']:
                 st.text(f'ERROR   Row {row_number}: {error_message}')
