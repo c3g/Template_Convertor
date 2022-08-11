@@ -70,6 +70,7 @@ def normalize_name(name):
 
 
 class MOHSampleManifestExtractor:
+
     # Implements the sample extraction logic
     def __init__(self, manifest: MOHSampleManifest, conversion_log: ConversionLog):
         self.manifest = manifest
@@ -204,6 +205,11 @@ class MOHSampleManifestExtractor:
         container_barcode = self._extract_value(row, MOHHeaders.CONTAINER_BARCODE)
         well = self._normalize_well(self._extract_value(row, MOHHeaders.WELL))
 
+
+        # Replace spaces in container name with underscore '_'
+        if container_name is not None:
+            container_name = container_name.strip().replace(' ', '_')
+
         # Emit an error if the container type is None but other container fields contain data.
         # If there is no container data in any field then just return.
         if container_type is None:
@@ -276,13 +282,13 @@ class MOHSampleManifestExtractor:
             if sample_ns.INDIVIDUAL_ID is None:
                 # For MOH, the individual id is part of the sample name.
                 # If the sample name conforms to the MoH naming convention then extract the
-                # individual id.
-                moh_name = self._extract_individual_id_from_sample_name(self._extract_value(row, MOHHeaders.SAMPLE_NAME))
-                if moh_name is not None:
-                    sample_ns.INDIVIDUAL_ID = moh_name
+                # individual id and cohort.
+                sample_name = self._extract_value(row, MOHHeaders.SAMPLE_NAME)
+                if self._is_moh_sample_name(sample_name):
+                    self._extract_moh_individual_and_cohort(self._extract_value(row, MOHHeaders.SAMPLE_NAME), sample_ns)
                 else:
                     self._log_error("Individual ID must be specified if cohort, sex or taxon is specified.")
-               
+                
     def _extract_volume_and_concentration(self, row, sample_ns):
         # "VOLUME"
         # "CONCENTRATION"
@@ -306,16 +312,41 @@ class MOHSampleManifestExtractor:
         # libraries are not supported by this tool
         pass
 
-    def _extract_individual_id_from_sample_name(self, sample_name):
-        # Match MoH names like MoHQ-GC-15-80-FT1-1RT
-        # If matched, return the first four segments, eg. MoHQ-GC-15-80,
-        # which is the individual id.
-        if sample_name:
-            match = re.match(r'(MoH.-\w+-\w+-\w+)-.*', sample_name)
-            if match:
-                return match[1]
-        return None
+    def _is_moh_sample_name(self, sample_name):
+        if sample_name is not None:
+            return sample_name.startswith('MoH')
+        else:
+            return False
 
+    def _extract_moh_individual_and_cohort(self, sample_name, sample_ns):
+        # Regular expression for matching MoH sample name format.
+        # MOH sample names have six segments, separated by '-' dashes.
+        # Example: MoHQ-MU-8-16-FF1-1DT
+        #
+        # Segment 1:  must begin with "MoH" followed by a letter indicating the region (Q for Quebec)
+        # Segment 2: Institution code (MU, JG, CM, GC, MR)
+        # Segment 3: Cohort id
+        # Segment 4: Patient id in cohort
+        # Segment 5: Sample id
+        # Segment 6: Sample info (extraction, DNA/RNA, normal/tumour)
+        # 
+        # We use the first four segments for the freezeman individual id (eg. MoHQ-MU-8-16)
+        # and we extract the cohort id.
+
+        moh_sample_name_reg_exp = r'(MoH.-\w+-(\w+)-\w+)-\w+-\w+'
+
+        match = re.match(moh_sample_name_reg_exp, sample_name)
+        if match is None:
+            self._log_warning(f'MoH sample name does not match expected format "{sample_name}". Individual ID and cohort cannot be extracted.')
+        else:
+            # match[1] is the individual id
+            if sample_ns.INDIVIDUAL_ID is None:
+                sample_ns.INDIVIDUAL_ID = match[1]
+            # match[2] is the cohort id segment
+            if sample_ns.COHORT is None:
+                sample_ns.COHORT = match[2]
+
+                
     def _normalize_well(self, well):
         """
         Freezeman expects well coordinates to contain a letter followed by two
