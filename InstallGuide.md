@@ -97,5 +97,42 @@ To come back to the screen later to check that the app is still running use:
 `screen -r convertor`
 
 
+## Update Convertor
+___
+
+Open an ssh tunnel as described above, then:
+
+sudo to the django user
+
+`sudo su - django`
+
+restart the 'convertor' screen
+
+`screen -r convertor`
+
+shut down streamlit, if it's still running
+
+`ctrl-c`
+
+make sure you are in the Template_Convertor directory
+
+`cd /data/Template_Convertor`
+
+run git status to make sure git is working and then pull
+
+`git status`
+
+`git pull`
+
+relaunch the app
+
+`streamlit run app_streamlit.py`
+
+exit the screen
+
+`ctrl-a d`
+
+
+
 
 
