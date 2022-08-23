@@ -1,10 +1,22 @@
-# Install Convertor
+# Convertor Installation and Update Guide
 
+
+## Installation
+___
 open an ssh tunnel to the dev or qc or prod server (note: IT has to grant you access to do this)
 
+(dev)
 `ssh cousteau.genome.mcgill.ca -L 2222:f5kvm-biobank-dev:22 `
+
+(qc)
 `ssh cousteau.genome.mcgill.ca -L 2223:f5kvm-biobank-qc:22`
+
+(prod)
 `ssh cousteau.genome.mcgill.ca -L 2224:biobank.genome.mcgill.ca:22`
+
+In a separate terminal, ssh into the server (use 2222, 2223 or 2224 depending which server you are connecting to)
+
+`ssh -p 2222 <your_user_name>@localhost`
 
 switch to the django user (sudo su - django)
 
@@ -96,8 +108,8 @@ To come back to the screen later to check that the app is still running use:
 
 `screen -r convertor`
 
-
-## Update Convertor
+---
+## Update
 ___
 
 Open an ssh tunnel as described above, then:
@@ -106,29 +118,29 @@ sudo to the django user
 
 `sudo su - django`
 
-restart the 'convertor' screen
+Restart the 'convertor' screen
 
 `screen -r convertor`
 
-shut down streamlit, if it's still running
+Shut down streamlit, if it's still running
 
 `ctrl-c`
 
-make sure you are in the Template_Convertor directory
+Make sure you are in the Template_Convertor directory
 
 `cd /data/Template_Convertor`
 
-run git status to make sure git is working and then pull
+Run git status to make sure git is working and then pull
 
 `git status`
 
 `git pull`
 
-relaunch the app
+Relaunch the app
 
 `streamlit run app_streamlit.py`
 
-exit the screen
+Exit the screen
 
 `ctrl-a d`
 
