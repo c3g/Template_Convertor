@@ -86,6 +86,11 @@ Verify that it is running by opening a browser and going to one of the addresses
  
 If everything is running properly, shutdown streamlit and then  use gnu screen to launch the app, so that ending your ssh session doesn’t shutdown the app.
 
+### Running Convertor in Dev and QC
+___
+
+*In Dev and QC we start and stop the Convertor app manually. We use gnu screen so that we can log out of the terminal and Convertor will continue running.*
+
 Shutdown streamlit
 
 `ctrl-C`
@@ -107,6 +112,24 @@ To come back to the screen later to check that the app is still running use:
 `sudo su - django`
 
 `screen -r convertor`
+
+### Running Convertor in Prod
+___
+*Nginx is configured to run the Convertor application in Prod.*
+
+The following commands are used to manage the application. You can ssh into the prod server and then run these commands (without having to sudo as the django user).
+```
+sudo /usr/bin/systemctl start convertor
+sudo /usr/bin/systemctl status convertor
+sudo /usr/bin/systemctl stop convertor
+sudo /usr/bin/systemctl restart convertor
+```
+
+The Convertor log can be viewed with this command:
+
+```
+sudo /usr/bin/journalctl -u convertor
+```
 
 ---
 ## Update
