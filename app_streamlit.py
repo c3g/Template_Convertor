@@ -10,6 +10,11 @@ from convertor import MOHSampleManifestConversion
 from convertor.core.conversion_log import ConversionLog
 from convertor.freezeman import freezeman_template
 
+
+# Set the dom document title. 
+# Note: the page config needs to be the first streamlit command used by the app.
+st.set_page_config(page_title="Freezeman MGC Template Convertor")
+
 @dataclass
 class ConversionState:
     uploaded_template: Optional[BinaryIO] = None
