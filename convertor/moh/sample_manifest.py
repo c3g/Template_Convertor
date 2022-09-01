@@ -64,7 +64,8 @@ class MOHSampleManifest:
                 num_mismatches += 1
                 if num_mismatches > MAX_MISMATCHED_HEADER_CELLS:
                     return None
-        print("Mismatched headers: ", mismatched_headers)
+        if len(mismatched_headers) > 0:
+            print("Mismatched headers: ", mismatched_headers)
 
         return matched_headers
 

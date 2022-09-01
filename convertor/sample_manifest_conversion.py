@@ -1,11 +1,17 @@
 # from pathlib import PurePath
 import pandas
+import warnings
 
 from .core import ConversionLog, ManifestError
 from .freezeman import FHSSampleSubmissionTemplate
 from .moh import MOHSampleManifest, MOHSampleManifestExtractor
 
-
+# Disable openpyxl warnings that show up every time the freezeman template is loaded
+warnings.filterwarnings("ignore", module="openpyxl", category=UserWarning)
+# warnings.filterwarnings("ignore", category=UserWarning, message="Conditional Formatting extension is not supported and will be removed")
+# warnings.filterwarnings("ignore", category=UserWarning, message="Data Validation extension is not supported and will be removed")
+# warnings.filterwarnings("ignore", category=UserWarning, message="Unknown extension is not supported and will be removed")
+# 
 class MOHSampleManifestConversion:
     # Implements the conversion of one MOH sample manifest using files
     def __init__(
@@ -55,7 +61,7 @@ class MOHSampleManifestConversion:
                 "There was a problem with the manifest contents"
             ) from err
 
-        print("Data rows in manifest: ", manifest.get_data_row_range())
+        # print("Data rows in manifest: ", manifest.get_data_row_range())
 
         return manifest
 
