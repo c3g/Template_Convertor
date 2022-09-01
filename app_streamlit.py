@@ -48,6 +48,9 @@ def handle_upload():
         freezeman_template = PurePath(FMS_SUBMISSION_TEMPLATE_PATH)
         output_stream = BytesIO()
 
+        # Write the file name to console to keep track of user activity
+        print(f"Converting file: {state.uploaded_template.name}")
+
         convertor = MOHSampleManifestConversion(state.uploaded_template, freezeman_template, output_stream)
         convertor.do_conversion()
 
@@ -60,8 +63,11 @@ def handle_upload():
         state.freezeman_template_name = converted_file_name
         state.conversion_log = convertor.log
         state.conversion_error = None
+
+        print("done")
         
     except Exception as e:
+        print(f"An error occured during conversion: ", e)
         state.conversion_error = e
 
 
