@@ -28,16 +28,20 @@ class FHSSampleSubmissionTemplate:
     def _locate_headers(self):
         """Locate the row containing the column headers and build a map, mapping the
         column header key to the index of the column in the sheet."""
+
         row_counter = 0
         column_index_map = None
         for row in self.worksheet.iter_rows(max_row=20, max_col=50, values_only=True):
             row_counter += 1
             column_index_map = {}
 
+            # Strip any leading or trailing spaces in header names.
+            trimmed_row = list(map(lambda e: e.strip() if e is not None else e, row))
+
             for (header_key, header_value) in HEADERS.items():
-                if header_value in row:
+                if header_value in trimmed_row:
                     column_index = (
-                        row.index(header_value) + 1
+                        trimmed_row.index(header_value) + 1
                     )  # add 1 for one-based indexing
                     column_index_map[header_key] = column_index
                 else:

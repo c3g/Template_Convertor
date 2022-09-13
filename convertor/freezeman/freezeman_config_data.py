@@ -28,7 +28,7 @@ FMConfig = {
         "STRANDEDNESS": "Strandedness",
         "INDEX_SET": "Index Set",
         "INDEX": "Index",
-        "RECEPTION_DATE": "Reception Date",
+        "RECEPTION_DATE": "Reception (YYYY-MM-DD)",
         "COMMENT": "Comment"
     },
     "containerKind": {
