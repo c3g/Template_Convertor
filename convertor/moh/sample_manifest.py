@@ -3,6 +3,22 @@ from pandas import pandas as pd
 from ..core import ManifestError
 from .moh_config import HEADERS
 
+def clean_header_string(header_string: str) -> str:
+    """ 
+    MOH header strings can contain junk like newline characters, leading
+    and trailing spaces or double spaces. This function cleans out the
+    junk so that we can do a sane string compare with the header strings
+    we are expecting.
+    """
+
+    # replace newline or tab characters with spaces, and strip * chars
+    cleaned = header_string.replace("\n", " ").strip(" \t\r\*")
+    # replace 2 or more concurrent spaces with a single space
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)
+    # convert to lower case
+    cleaned = cleaned.casefold()
+
+    return cleaned
 
 class MOHSampleManifest:
     def __init__(self, data_frame):
@@ -37,38 +53,65 @@ class MOHSampleManifest:
         # Use loc to get the row with the line number index we set on the row in the constructor
         return self.data_frame.loc[line_number]
 
-    def is_header_row(self, rowTuple):
-        MAX_MISMATCHED_HEADER_CELLS = 3
-        mismatched_headers = []
-        matched_headers = []
+    def identify_headers(self, rowTuple):
+        """
+        Checks a row to see if it contains the column headers we are expecting to find in the manifest.
+        If all of the expected headers are found then it returns a list of header strings to be used
+        as column keys.
+        If it matches almost all of the headers, it will throw an exception that lists the headers
+        it could not find.
+        If it finds no matches or fewer matches than expected, it returns None.
 
-        num_mismatches = 0
+        This function supports various use cases:
+        - Columns out of order
+        - Empty columns (empty columns are ignored)
+        - Duplicate columns (all but the first will be ignored)
+        - Arbitrary extra columns (ignored)
+        """
+        MAX_MISMATCHED_HEADER_CELLS = 3
+
+        # Keeps track of the headers we are expecting to find.
+        expected_headers = self.cleaned_headers.copy()
+
+        # Collected column headers
+        column_headers = []
+
         for col in rowTuple:
-            # If a row cell contains anything other than a string then it is not a header row
+            # An empty colum has a 'nan' value. Just add a dummy header
+            # value for the column and continue.
             if not isinstance(col, str):
+                column_headers.append(f"IGNORED-{len(column_headers)}")
                 continue
 
-            # replace newline or tab characters with spaces, and strip * chars
-            cleaned = col.replace("\n", " ").strip(" \t\r\*")
-            # replace 2 or more concurrent spaces with a single space
-            cleaned = re.sub(r"\s{2,}", " ", cleaned)
-            # convert to lower case
-            cleaned = cleaned.casefold()
+            # Clean up the header string
+            cleaned = clean_header_string(col)
 
-            if cleaned in self.cleaned_headers:
-                matched_headers.append(cleaned)
-                if len(matched_headers) == len(self.cleaned_headers):
-                    return matched_headers
-            else:
-                mismatched_headers.append(cleaned)
-                matched_headers.append(f"UNKNOWN{num_mismatches}")
-                num_mismatches += 1
-                if num_mismatches > MAX_MISMATCHED_HEADER_CELLS:
-                    break
+            # Catch duplicate column header values. Having a duplicate key can cause
+            # a pandas exception <The truth value of a Series is ambiguous.>
+            # The convertor will ignore any duplicate columns.
+            if cleaned in column_headers:
+                column_headers.append(f"DUPLICATE-{cleaned}-{len(column_headers)}")
+                continue
 
-        if len(mismatched_headers) > 0:
-            print("Mismatched headers: ", mismatched_headers)
+            # Add the string to the column headers list. We need a key for the
+            # column regardless whether it's an expected header or something else.
+            column_headers.append(cleaned)
 
+            # If it's an expected header, remove it from expected_headers
+            if cleaned in expected_headers:
+                expected_headers.remove(cleaned)
+
+        # If all headers were found then we are golden.
+        if len(expected_headers) == 0:
+            return column_headers
+
+        # If we found most of the headers, but a few were missing then raise an error.
+        if len(expected_headers) <= MAX_MISMATCHED_HEADER_CELLS:
+            # TODO add this to log?
+            message = "Expected columns were not found in manifest: " + ", ".join(map(lambda s : f"'{s}'", expected_headers))
+            raise ManifestError(message)
+        
+        # This row didn't match enough (or any) expected columns to be considered the header row.
         return None
 
     def _find_header_row_index(self):
@@ -77,13 +120,21 @@ class MOHSampleManifest:
             # the line number is first item in tuple
             line_number = row[0]
             # pass the row, excluding first line number element in the tuple
-            matched_headers = self.is_header_row(row[1:])
+            matched_headers = self.identify_headers(row[1:])
             if matched_headers is not None:
+
+                # Use the matched header values as keys for the columns.
+                # If the sheet contains more columns than headers then append
+                # the existing column keys to the header list. If we don't, pandas
+                # will throw an exception because the number of keys does not match
+                # the number of columns.
                 header_count = len(matched_headers)
                 while header_count < len(self.data_frame.columns):
-                    matched_headers[header_count] = self.data_frame.columns[header_count]
+                    # grab whatever key is currently on the extra column and add it to the list
+                    matched_headers.append(self.data_frame.columns[header_count])
                     header_count += 1
 
+                # Set column keys on the columns.
                 self.data_frame.columns = matched_headers
                 return line_number
             # Abort if we can't find the header row within the first MAX_ROWS_TO_CHECK rows of the sheet.

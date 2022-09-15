@@ -42,7 +42,7 @@ def convert(manifest_file_path, output_path):
         conversion.do_conversion()
     except Exception as e:
         # Capture any exception so that we can still write the log file
-        sys.stderr.write('Conversion failed')
+        sys.stderr.write('Conversion failed\n')
         sys.stderr.write(str(e))
     finally:
         # Write log no matter what happens, since we capture exception
