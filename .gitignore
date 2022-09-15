@@ -7,6 +7,8 @@ __pycache__/
 output.xlsx
 ~*
 
+temp/
+
 data/output.log
 data/~$output.xlsx
 data/~$MOH-TEST.xlsx
