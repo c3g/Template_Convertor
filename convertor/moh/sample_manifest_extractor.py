@@ -203,7 +203,7 @@ class MOHSampleManifestExtractor:
         container_type = self._extract_value(row, MOHHeaders.CONTAINER_TYPE)
         container_name = self._extract_value(row, MOHHeaders.CONTAINER_NAME)
         container_barcode = self._extract_value(row, MOHHeaders.CONTAINER_BARCODE)
-        well = self._normalize_well(self._extract_value(row, MOHHeaders.WELL))
+        well = self._normalize_well(self._extract_value(row, MOHHeaders.WELL, force_string=True))
 
 
         # Replace spaces in container name with underscore '_'

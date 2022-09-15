@@ -44,10 +44,9 @@ class MOHSampleManifest:
 
         num_mismatches = 0
         for col in rowTuple:
-
             # If a row cell contains anything other than a string then it is not a header row
             if not isinstance(col, str):
-                return None
+                continue
 
             # replace newline or tab characters with spaces, and strip * chars
             cleaned = col.replace("\n", " ").strip(" \t\r\*")
@@ -58,16 +57,19 @@ class MOHSampleManifest:
 
             if cleaned in self.cleaned_headers:
                 matched_headers.append(cleaned)
+                if len(matched_headers) == len(self.cleaned_headers):
+                    return matched_headers
             else:
                 mismatched_headers.append(cleaned)
                 matched_headers.append(f"UNKNOWN{num_mismatches}")
                 num_mismatches += 1
                 if num_mismatches > MAX_MISMATCHED_HEADER_CELLS:
-                    return None
+                    break
+
         if len(mismatched_headers) > 0:
             print("Mismatched headers: ", mismatched_headers)
 
-        return matched_headers
+        return None
 
     def _find_header_row_index(self):
         MAX_ROWS_TO_CHECK = 10
