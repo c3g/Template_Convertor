@@ -48,6 +48,9 @@ class ConversionLog:
        
         log_stream.write("Conversion log\n")
 
+
+
+
         for general_message in self.general_messages:
             log_stream.write(f"{general_message}\n")
 

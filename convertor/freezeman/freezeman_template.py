@@ -2,14 +2,14 @@
 # Find header row? Or just append rows to document and assume?
 # Append each sample, setting each sample value in the appropriate column
 # Write out the template to disk?
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 from .freezeman_config import HEADERS
 
 
 class FHSSampleSubmissionTemplate:
-    def __init__(self, template_path):
+    def __init__(self, template_path: str):
         try:
-            self.workbook = load_workbook(filename=template_path)
+            self.workbook: Workbook = load_workbook(filename=template_path)
             self.worksheet = self.workbook["SampleSubmission"]
             if self.worksheet is None:
                 raise RuntimeError(
@@ -17,6 +17,8 @@ class FHSSampleSubmissionTemplate:
                 )
         except BaseException as err:
             print("Failed to load fms sample submission template")
+            print(err)
+            print("\n")
             raise err
 
         self.header_row_index, self.column_index_map = self._locate_headers()
