@@ -9,9 +9,9 @@ output.xlsx
 
 temp/
 
-data/output.log
-data/~$output.xlsx
-data/~$MOH-TEST.xlsx
+data/*.log
+data/~*.xlsx
+data/*.fms.xlsx
 
 distribute/build
 distribute/dist
