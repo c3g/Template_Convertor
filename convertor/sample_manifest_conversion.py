@@ -34,6 +34,8 @@ class MOHSampleManifestConversion:
         # load manifest
         try:
             manifest = self.load_manifest(self.manifest_stream)
+        except ManifestError as err:
+            raise err
         except BaseException as err:
             self.log.add_general_message('Sample manifest could not be loaded')
             self.log.add_general_message(err)
@@ -56,6 +58,8 @@ class MOHSampleManifestConversion:
 
         try:
             manifest = MOHSampleManifest(manifest_frame)
+        except ManifestError as err:
+            raise err
         except Exception as err:
             raise ManifestError(
                 "There was a problem with the manifest contents"
