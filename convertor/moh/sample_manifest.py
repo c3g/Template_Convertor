@@ -1,5 +1,6 @@
 import re
-from pandas import pandas as pd
+# from pandas import pandas as pd
+import pandas as pd
 from ..core import ManifestError
 from .moh_config import HEADERS
 

@@ -1,7 +1,7 @@
 from datetime import date
 from types import SimpleNamespace
 import re
-from pandas import pandas as pd
+import pandas as pd
 from ..core import ConversionLog
 from ..freezeman import CONTAINER_KIND, HEADERS as FMS_HEADERS
 from .moh_config import (

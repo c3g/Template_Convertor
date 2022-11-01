@@ -9,6 +9,8 @@ from common import FMS_SUBMISSION_TEMPLATE_PATH
 from convertor import MOHSampleManifestConversion
 from convertor.core.conversion_log import ConversionLog
 from convertor.freezeman import freezeman_template
+from version import CONVERTOR_VERSION
+import logging
 
 
 # Set the dom document title. 
@@ -49,7 +51,7 @@ def handle_upload():
         output_stream = BytesIO()
 
         # Write the file name to console to keep track of user activity
-        print(f"Converting file: {state.uploaded_template.name}")
+        logging.info(f"Converting file: {state.uploaded_template.name}")
 
         convertor = MOHSampleManifestConversion(state.uploaded_template, freezeman_template, output_stream)
         convertor.do_conversion()
@@ -64,10 +66,10 @@ def handle_upload():
         state.conversion_log = convertor.log
         state.conversion_error = None
 
-        print("done")
+        logging.info("done")
         
     except Exception as e:
-        print(f"An error occured during conversion: ", e)
+        logging.error(f"An error occured during conversion: ", e)
         state.conversion_error = e
 
 
@@ -80,6 +82,7 @@ def reset():
     
 # Components
 st.title('Freezeman MGC Template Converter')
+st.caption(f'Version: {CONVERTOR_VERSION}')
 
 if state.uploaded_template is None:
     # Display the file upload widget if no template has been uploaded yet.
