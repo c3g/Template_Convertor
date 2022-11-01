@@ -42,7 +42,7 @@ class MOHSampleManifest:
         self.header_row_index = self._find_header_row_index()
         if self.header_row_index == -1:
             raise ManifestError(
-                "Unable to locate header row - missing or misnamed columns?"
+                "The expected headers could not be located in the sheet - is this an MGC sample manifest?"
             )
 
     def get_data_row_range(self):
@@ -109,7 +109,7 @@ class MOHSampleManifest:
         # If we found most of the headers, but a few were missing then raise an error.
         if len(expected_headers) <= MAX_MISMATCHED_HEADER_CELLS:
             # TODO add this to log?
-            message = "Expected columns were not found in manifest: " + ", ".join(map(lambda s : f"'{s}'", expected_headers))
+            message = "These expected headers were not found in the manifest: " + ", ".join(map(lambda s : f"'{s}'", expected_headers))
             raise ManifestError(message)
         
         # This row didn't match enough (or any) expected columns to be considered the header row.
