@@ -13,7 +13,7 @@ def clean_header_string(header_string: str) -> str:
     """
 
     # replace newline or tab characters with spaces, and strip * chars
-    cleaned = header_string.replace("\n", " ").strip(" \t\r\*")
+    cleaned = header_string.replace("\n", " ").strip(" \t\r*")
     # replace 2 or more concurrent spaces with a single space
     cleaned = re.sub(r"\s{2,}", " ", cleaned)
     # convert to lower case
