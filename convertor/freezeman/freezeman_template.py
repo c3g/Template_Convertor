@@ -58,21 +58,18 @@ class FHSSampleSubmissionTemplate:
         return (None, None)
 
     def append_samples(self, samples):
-        # num_samples = len(samples)
+        if self.header_row_index is None:
+            raise RuntimeError('Cannot output samples - header_row_index is not defined.')
 
-        # TODO find header row, and identify columns
-        start_row = 8
-
-        # TODO Do we really need to insert rows? The spreadsheet seems to
-        # contain 1000 rows already...
-        # self.worksheet.insert_rows(start_row, num_samples)
-
-        row_index = start_row
+        row_index = self.header_row_index + 1
         for sample in samples:
             self._write_sample_row(row_index, sample)
             row_index += 1
 
     def _write_sample_row(self, row_index, sample):
+        if self.column_index_map is None:
+            raise RuntimeError('Cannot output samples - column_index_map is not defined.')
+
         # Convert sample SimpleNamespace to a regular dictionary
         sample_dictionary = vars(sample)
 
