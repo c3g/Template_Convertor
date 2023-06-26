@@ -66,9 +66,12 @@ def normalize_name(name):
     Replace illegal characters by underscores.
     Legal characters are a-z, A-Z, 0-9, _ (underscore), - (dash), . (period)
     """
-
-    reg_ex = "[^a-z|A-Z|0-9|_.-]"
-    return re.sub(reg_ex, "_", name)
+    if isinstance(name, str):
+        reg_ex = "[^a-z|A-Z|0-9|_.-]"
+        return re.sub(reg_ex, "_", name)
+    else:
+        return name
+    
 
 
 class MOHSampleManifestExtractor:
@@ -79,10 +82,10 @@ class MOHSampleManifestExtractor:
         self.log = conversion_log
         self.current_row_number = -1
 
-    def _log_error(self, error_message):
+    def _log_error(self, error_message: str):
         self.log.add_error(self.current_row_number, error_message)
 
-    def _log_warning(self, warning_message):
+    def _log_warning(self, warning_message: str):
         self.log.add_warning(self.current_row_number, warning_message)
 
     def extract_samples(self):
@@ -126,7 +129,7 @@ class MOHSampleManifestExtractor:
         sample_ns.SAMPLE_TYPE = FMSSampleType.SAMPLE
         sample_ns.SAMPLE_KIND = row_type
 
-        sample_ns.SAMPLE_NAME = normalize_name(row[MOHHeaders.SAMPLE_NAME])
+        sample_ns.SAMPLE_NAME = normalize_name(self._extract_string(row, MOHHeaders.SAMPLE_NAME))
         sample_ns.ALIAS = row[MOHHeaders.SAMPLE_NAME]
 
         sample_ns.VOLUME = self._extract_value(row, MOHHeaders.VOLUME)
@@ -137,15 +140,22 @@ class MOHSampleManifestExtractor:
 
         self._extract_volume_and_concentration(row, sample_ns)
 
-        sample_ns.COMMENT = self._extract_value(row, MOHHeaders.COMMENTS, force_string=True)
+        sample_ns.COMMENT = self._extract_string(row, MOHHeaders.COMMENTS)
 
         # Populating the reception date with today's date may lead to errors.
         # It is better to leave the date empty so that the user knows they need to provide the proper date.
         # sample_ns.RECEPTION_DATE = date.today().isoformat()
 
         return sample_ns
+    
+    def _extract_string(self, row, header_name: str):
+        """ Extract a value and return it as a string. This is used for names, barcodes, etc.
+            where the user may have entered a name composed of digits, which would otherwise
+            end up parsed as a number.
+        """
+        return self._extract_value(row, header_name, force_string=True)
 
-    def _extract_value(self, row, header_name, force_string = False):
+    def _extract_value(self, row, header_name: str, force_string: bool = False):
         """
         Extract a value from a cell. If the value is NaN return None.
         If force_string is True then the value will be converted to a string,
@@ -206,10 +216,10 @@ class MOHSampleManifestExtractor:
 
     def _extract_container(self, row, sample_ns):
 
-        container_type = self._extract_value(row, MOHHeaders.CONTAINER_TYPE)
-        container_name = self._extract_value(row, MOHHeaders.CONTAINER_NAME)
-        container_barcode = self._extract_value(row, MOHHeaders.CONTAINER_BARCODE)
-        well = self._normalize_well(self._extract_value(row, MOHHeaders.WELL, force_string=True))
+        container_type = self._extract_string(row, MOHHeaders.CONTAINER_TYPE)
+        container_name = self._extract_string(row, MOHHeaders.CONTAINER_NAME)
+        container_barcode = self._extract_string(row, MOHHeaders.CONTAINER_BARCODE)
+        well = self._normalize_well(self._extract_string(row, MOHHeaders.WELL))
 
 
         # Replace spaces in container name with underscore '_'
@@ -237,14 +247,14 @@ class MOHSampleManifestExtractor:
                     
                     # If no tube barcode is specified, default to the sample name as the barcode
                     if container_barcode is None:
-                        sample_ns.CONTAINER_BARCODE = self._extract_value(row, MOHHeaders.SAMPLE_NAME)
+                        sample_ns.CONTAINER_BARCODE = self._extract_string(row, MOHHeaders.SAMPLE_NAME)
                     else:
                         sample_ns.CONTAINER_BARCODE = container_barcode
 
                     # Tube carrier
                     # If the tube is shipped in a tube carrier set the fms location barcode to the
                     # tube carrier barcode, and the fms container coord to the well.
-                    tube_carrier_barcode = self._extract_value(row, MOHHeaders.TUBE_CARRIER_BARCODE)
+                    tube_carrier_barcode = self._extract_string(row, MOHHeaders.TUBE_CARRIER_BARCODE,)
                     if tube_carrier_barcode is not None:
                         sample_ns.LOCATION_BARCODE = tube_carrier_barcode
                         sample_ns.CONTAINER_COORD = well
@@ -267,15 +277,15 @@ class MOHSampleManifestExtractor:
         # Cohort ID
         # Species
         # Sex
-        sample_ns.INDIVIDUAL_ID = self._extract_value(row, MOHHeaders.INDIVIDUAL_ID, force_string=True)
+        sample_ns.INDIVIDUAL_ID = self._extract_string(row, MOHHeaders.INDIVIDUAL_ID)
         
-        sample_ns.COHORT = self._extract_value(row, MOHHeaders.COHORT_ID, force_string=True)
+        sample_ns.COHORT = self._extract_string(row, MOHHeaders.COHORT_ID)
 
-        sample_ns.SEX = self._extract_value(row, MOHHeaders.SEX)
+        sample_ns.SEX = self._extract_string(row, MOHHeaders.SEX)
 
         # For species, freezeman only supports a limited set of taxon id's
         # Should we copy the taxon anyway and let the user decide what they want to do?
-        taxon = self._extract_value(row, MOHHeaders.SPECIES)
+        taxon = self._extract_string(row, MOHHeaders.SPECIES)
         if taxon is not None:
             if taxon in TAXON_TYPE_MAP:
                 sample_ns.TAXON = TAXON_TYPE_MAP[taxon]
@@ -289,9 +299,9 @@ class MOHSampleManifestExtractor:
                 # For MOH, the individual id is part of the sample name.
                 # If the sample name conforms to the MoH naming convention then extract the
                 # individual id and cohort.
-                sample_name = self._extract_value(row, MOHHeaders.SAMPLE_NAME)
+                sample_name = self._extract_string(row, MOHHeaders.SAMPLE_NAME)
                 if self._is_moh_sample_name(sample_name):
-                    self._extract_moh_individual_and_cohort(self._extract_value(row, MOHHeaders.SAMPLE_NAME), sample_ns)
+                    self._extract_moh_individual_and_cohort(sample_name, sample_ns)
                 else:
                     self._log_error("Individual ID must be specified if cohort, sex or taxon is specified.")
                 
