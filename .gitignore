@@ -11,7 +11,7 @@ temp/
 
 data/*.log
 data/~*.xlsx
-data/*.fms.xlsx
+data/*fms*.xlsx
 
 distribute/build
 distribute/dist

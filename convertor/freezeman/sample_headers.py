@@ -1,4 +1,5 @@
 class SampleHeaders:
+    SAMPLE_TYPE = "Sample Type"
     SAMPLE_KIND = "Sample Kind"
     SAMPLE_NAME = "Sample Name"
     PROJECT = "Project"
@@ -24,6 +25,7 @@ class SampleHeaders:
     ALIAS = "Alias"
 
     ALL_HEADERS = [
+        SAMPLE_TYPE,
         SAMPLE_KIND,
         SAMPLE_NAME,
         PROJECT,
