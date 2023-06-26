@@ -1,4 +1,4 @@
-CONVERTOR_VERSION = '4.3'
+CONVERTOR_VERSION = '4.3.1'
 
 # 3.12.1: 	Updated streamlit and Pillow because of security warnings
 # 3.13.0: 	Updated for freezeman 3.13.0 submission template
@@ -7,3 +7,4 @@ CONVERTOR_VERSION = '4.3'
 # 4.2: 		Updated with freezeman 4.2 submission template
 # 4.3:		Updated with freezeman 4.3 submission template
 # 			Added support for new fms "Sample Type" column
+# 4.3.1:	Handle numeric names properly
