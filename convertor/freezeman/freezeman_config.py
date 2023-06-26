@@ -4,3 +4,4 @@ from .freezeman_config_data import FMConfig
 HEADERS = FMConfig["headers"]
 CONTAINER_KIND = FMConfig["containerKind"]
 LIBRARY_TYPES = FMConfig["library_types"]
+SAMPLE_TYPES = FMConfig["sample_types"]

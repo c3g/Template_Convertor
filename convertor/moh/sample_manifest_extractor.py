@@ -4,6 +4,7 @@ import re
 import pandas as pd
 from ..core import ConversionLog
 from ..freezeman import CONTAINER_KIND, HEADERS as FMS_HEADERS
+from ..freezeman import SAMPLE_TYPES as FMS_SAMPLE_TYPES
 from .moh_config import (
     HEADERS,
     SAMPLE_TYPES,
@@ -57,6 +58,7 @@ MOHTaxonTypes = SimpleNamespace(**TAXON_TYPE_MAP)
 
 FMSHeaders = SimpleNamespace(**FMS_HEADERS)
 FMSContainerKind = SimpleNamespace(**CONTAINER_KIND)
+FMSSampleType = SimpleNamespace(**FMS_SAMPLE_TYPES)
 
 
 def normalize_name(name):
@@ -118,6 +120,10 @@ class MOHSampleManifestExtractor:
 
         sample_ns = self._create_fms_sample()
 
+        # Currently, Convertor only supports samples (not libraries or pools) so
+        # we automatically set the FMS sample type to "Sample" here. If we add support
+        # for libraries then this will need to be changed.
+        sample_ns.SAMPLE_TYPE = FMSSampleType.SAMPLE
         sample_ns.SAMPLE_KIND = row_type
 
         sample_ns.SAMPLE_NAME = normalize_name(row[MOHHeaders.SAMPLE_NAME])

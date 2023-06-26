@@ -1,5 +1,6 @@
 FMConfig = {
     "headers": {
+        "SAMPLE_TYPE": "Sample Type",
         "SAMPLE_KIND": "Sample Kind",
         "SAMPLE_NAME": "Sample Name",
         "ALIAS": "Alias",
@@ -51,5 +52,10 @@ FMConfig = {
         "T_16S" : "16S",
         "T_18S" : "18S",
         "MI_RNA" : "miRNA"
+    },
+    "sample_types": {
+        "SAMPLE": "Sample",
+        "LIBRARY": "Library",
+        "LIBRARY_IN_POOL": "Library in pool"
     }
 }

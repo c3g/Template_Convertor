@@ -1,9 +1,10 @@
 from .freezeman_template import FHSSampleSubmissionTemplate
-from.freezeman_config import HEADERS, CONTAINER_KIND, LIBRARY_TYPES
+from.freezeman_config import HEADERS, CONTAINER_KIND, LIBRARY_TYPES, SAMPLE_TYPES
 
 __all__=[
     'FHSSampleSubmissionTemplate',
     'HEADERS',
     'CONTAINER_KIND',
-    'LIBRARY_TYPES'
+    'LIBRARY_TYPES',
+    'SAMPLE_TYPES'
 ]
