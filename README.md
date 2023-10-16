@@ -38,7 +38,7 @@ with the latest form.
 
 
 
-## Setting up a pyevn virtual environment
+## Setting up a pyenv virtual environment
 
 * Install pyenv and pyenv-virtualenv (on OSX use brew).
 * Install the version of Python you want to use:

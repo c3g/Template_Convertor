@@ -11,11 +11,11 @@ class SampleHeaders:
     CONTAINER_NAME = "Container Name"
     CONTAINER_BARCODE = "Container Barcode"
     CONTAINER_COORD = "Container Coord"
-    INDIVIDUAL_ID = "Individual ID"
+    INDIVIDUAL_NAME = "Individual Name"
     SEX = "Sex"
     PEDIGREE = "Pedigree"
-    MOTHER_ID = "Mother ID"
-    FATHER_ID = "Father ID"
+    MOTHER_NAME = "Mother Name"
+    FATHER_NAME = "Father Name"
     VOLUME = "Volume (uL)"
     CONCENTRATION = "Conc. (ng/uL)"
     COLLECTION_SITE = "Collection Site"
@@ -37,11 +37,11 @@ class SampleHeaders:
         CONTAINER_NAME,
         CONTAINER_BARCODE,
         CONTAINER_COORD,
-        INDIVIDUAL_ID,
+        INDIVIDUAL_NAME,
         SEX,
         PEDIGREE,
-        MOTHER_ID,
-        FATHER_ID,
+        MOTHER_NAME,
+        FATHER_NAME,
         VOLUME,
         CONCENTRATION,
         COLLECTION_SITE,
