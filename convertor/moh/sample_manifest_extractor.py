@@ -277,7 +277,7 @@ class MOHSampleManifestExtractor:
         # Cohort ID
         # Species
         # Sex
-        sample_ns.INDIVIDUAL_ID = self._extract_string(row, MOHHeaders.INDIVIDUAL_ID)
+        sample_ns.INDIVIDUAL_NAME = self._extract_string(row, MOHHeaders.INDIVIDUAL_ID)
         
         sample_ns.COHORT = self._extract_string(row, MOHHeaders.COHORT_ID)
 
@@ -295,7 +295,7 @@ class MOHSampleManifestExtractor:
         # If cohort, sex, or taxon are specified then freezeman also requires
         # an indvidual ID
         if sample_ns.COHORT is not None or sample_ns.SEX is not None or sample_ns.TAXON is not None:
-            if sample_ns.INDIVIDUAL_ID is None:
+            if sample_ns.INDIVIDUAL_NAME is None:
                 # For MOH, the individual id is part of the sample name.
                 # If the sample name conforms to the MoH naming convention then extract the
                 # individual id and cohort.
@@ -356,8 +356,8 @@ class MOHSampleManifestExtractor:
             self._log_warning(f'MoH sample name does not match expected format "{sample_name}". Individual ID and cohort cannot be extracted.')
         else:
             # match[1] is the individual id
-            if sample_ns.INDIVIDUAL_ID is None:
-                sample_ns.INDIVIDUAL_ID = match[1]
+            if sample_ns.INDIVIDUAL_NAME is None:
+                sample_ns.INDIVIDUAL_NAME = match[1]
             # match[2] is the cohort id segment
             if sample_ns.COHORT is None:
                 sample_ns.COHORT = match[2]
