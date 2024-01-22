@@ -28,13 +28,13 @@ The project contains a streamlit config file `.streamlit/config.toml`.
 
 ## Updating The App
 
-Each time the freezeman sample submission form changes, we need to update the app
-with the latest form.
+Each time the freezeman sample submission template changes, we need to update the app
+with the latest template.
 
-* Copy the form to ./config and rename it to `fms_sample_submission_template_[version].xlsx
-* Update the path to the form in `./common.py`
+* Copy the template to ./config and rename it to `fms_sample_submission_template_[version].xlsx
+* Update the path to the template in `./common.py`
 * Update the Converter version number to match freezeman, in `./version.py`
-* Make any changes required for the new form.
+* Make any code changes required for the new template.
 
 
 
