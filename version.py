@@ -1,4 +1,4 @@
-CONVERTOR_VERSION = '4.6'
+CONVERTOR_VERSION = '4.9'
 
 # 3.12.1: 	Updated streamlit and Pillow because of security warnings
 # 3.13.0: 	Updated for freezeman 3.13.0 submission template
@@ -11,3 +11,4 @@ CONVERTOR_VERSION = '4.6'
 # 4.4:		Updated version number only - no template changes
 # 4.5:		Updated version number - Template replaced individuals ID by Name
 # 4.6:		Updated version number - no template changes
+# 4.9:		Updated version number - no template changes
