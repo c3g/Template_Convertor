@@ -1,4 +1,4 @@
-CONVERTOR_VERSION = '4.9'
+CONVERTOR_VERSION = '4.12'
 
 # 3.12.1: 	Updated streamlit and Pillow because of security warnings
 # 3.13.0: 	Updated for freezeman 3.13.0 submission template
@@ -12,3 +12,4 @@ CONVERTOR_VERSION = '4.9'
 # 4.5:		Updated version number - Template replaced individuals ID by Name
 # 4.6:		Updated version number - no template changes
 # 4.9:		Updated version number - no template changes
+# 4.12:   Updated version number - Template removed header fields and changed Taxon ID to Taxon name
