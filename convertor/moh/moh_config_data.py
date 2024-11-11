@@ -74,9 +74,9 @@ MOHConfig = {
         "TUBE": "Tube"
     },
     "taxonTypeMap": {
-        "Eukaryota:Homo sapiens (Taxon ID:9606)": 9606,
-        "Eukaryota:Mus musculus (Taxon ID:10090)": 10090,
-        "Viruses:Severe acute respiratory syndrome coronavirus 2 (Taxon ID:2697049)": 2697049,
+        "Eukaryota:Homo sapiens (Taxon ID:9606)": "Homo sapiens",
+        "Eukaryota:Mus musculus (Taxon ID:10090)": "Mus musculus",
+        "Viruses:Severe acute respiratory syndrome coronavirus 2 (Taxon ID:2697049)": "Sars-Cov-2",
         "NOT_IN_MOH": "Ixodes Scapularis"
     },
     "concentration_units": {
