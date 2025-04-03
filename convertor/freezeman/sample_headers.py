@@ -13,9 +13,6 @@ class SampleHeaders:
     CONTAINER_COORD = "Container Coord"
     INDIVIDUAL_NAME = "Individual Name"
     SEX = "Sex"
-    PEDIGREE = "Pedigree"
-    MOTHER_NAME = "Mother Name"
-    FATHER_NAME = "Father Name"
     VOLUME = "Volume (uL)"
     CONCENTRATION = "Conc. (ng/uL)"
     COLLECTION_SITE = "Collection Site"
@@ -39,9 +36,6 @@ class SampleHeaders:
         CONTAINER_COORD,
         INDIVIDUAL_NAME,
         SEX,
-        PEDIGREE,
-        MOTHER_NAME,
-        FATHER_NAME,
         VOLUME,
         CONCENTRATION,
         COLLECTION_SITE,
